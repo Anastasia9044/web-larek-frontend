@@ -17,6 +17,7 @@ export interface IOrder {
   email: string;
   address: string;
   phone: string;
+  total: number;
 }
 
 export interface ICartPopup {
