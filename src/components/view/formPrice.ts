@@ -34,14 +34,14 @@ export class FormPrice extends Form<TForm> {
 		});
 	}
 
-	// Сеттер для установки адреса в поле формы
+// Сеттер для установки адреса в поле формы
 
 	set address(value: string) {
 		(this.container.elements.namedItem('address') as HTMLInputElement).value =
 			value;
 	}
 
-	// Сеттер для обновления визуального состояния выбранного способа оплаты
+// Сеттер для обновления визуального состояния выбранного способа оплаты
 
 	set payment(value: PayMethod) {
 		this.toggleClass(this._typeCard, 'button_alt-active', value === 'card');

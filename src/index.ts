@@ -36,7 +36,7 @@ const modal = new Popup(modalEl, events);
 const order = new FormPrice(cloneTemplate(orderTemplate), events);
 const contacts = new FormContact(cloneTemplate(contactsTemplate), events);
 
- //Обновление каталога товаров при событии 'catalog:update'
+//Обновление каталога товаров
 
 events.on('catalog:update', () => {
 	page.productItems = app.items.map((item) => {
@@ -106,7 +106,7 @@ events.on('basket:remove', (item: CatalogItem) => {
 	app.removeFromBasket(item);
 });
 
-// Удаление товара из карточки товара (например, из предварительного просмотра)
+// Удаление товара из карточки товара
 
 events.on('card:remove', (item: CatalogItem) => {
 	app.removeFromCard(item);
@@ -180,7 +180,7 @@ events.on(/^contacts\..*:change/, (data: { field: keyof TContact, value: string 
 	app.setContactsField(data.field, data.value);
 });
 
- //Изменилось состояние валидации формы контактов
+//Изменилось состояние валидации формы контактов
  
 events.on('contacts:validate', (errors: Partial<TOrder>) => {
 	const { email, phone } = errors;
@@ -211,19 +211,11 @@ events.on('modal:open', () => {
 });
 
 // Разблокировка страницы после закрытия модального окна
-/*
-events.on('modal:open', () => {
-	page.isLocked = true;
-});
-*/
+
 events.on('modal:close', () => {
 	page.isLocked  = false; // разблокировка страницы после закрытия модального окна
 });
-/*
-events.on('modal:close', () => {
-	page.isLocked  = false; // разблокировка страницы после закрытия модального окна
-});
-*/
+
 // Загрузка списка товаров с сервера при инициализации приложения.
 
 api

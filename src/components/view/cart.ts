@@ -20,22 +20,21 @@ export class Cart extends Component<TCartView> {
 	constructor(container: HTMLElement, protected events: IEvents) {
 		super(container);
 
-		// Ищем и сохраняем элементы по селекторам внутри контейнера
+// Ищем и сохраняем элементы по селекторам внутри контейнера
 
 		this._items = ensureElement<HTMLElement>('.basket__list', this.container);
 		this._button = ensureElement<HTMLElement>('.basket__button', this.container);
 		this._price = ensureElement<HTMLElement>('.basket__price', this.container);
 
-		// Назначаем обработчик клика по кнопке заказа
+// Назначаем обработчик клика по кнопке заказа
 
 		if (this._button) {
 			this._button.addEventListener('click', () => {
-				// При клике вызываем событие открытия формы заказа или другого действия
 				events.emit('order:open');
 			});
 		}
 
-		// Инициализация свойств корзины по умолчанию
+// Инициализация свойств корзины по умолчанию
 
 		this.price = 0;
 		this.items = [];
@@ -57,13 +56,13 @@ export class Cart extends Component<TCartView> {
 		}
 	}
 
-	// Сеттер для управления состоянием кнопки
+// Сеттер для управления состоянием кнопки
 
 	set toggleButton(value: boolean) {
         this.setDisabled(this._button, value);
     }
 
-	// Сеттер для обновления общей суммы в корзине
+// Сеттер для обновления общей суммы в корзине
 
 	set price(price: number) {
 		this.setText(this._price, formatNumber(price) + ' синапсов');

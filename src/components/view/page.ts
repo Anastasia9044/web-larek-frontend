@@ -17,7 +17,7 @@ export class Page extends Component<IPageState> {
 	constructor(container: HTMLElement, protected events: IEvents) {
 		super(container);
 
-		// Инициализация элементов по селекторам
+// Инициализация элементов по селекторам
 
         this._pageContainer = ensureElement<HTMLElement>(
 			'.page__wrapper',
@@ -36,7 +36,7 @@ export class Page extends Component<IPageState> {
 			this.container
 		);
 
-		// Обработчик клика по корзине
+// Обработчик клика по корзине
 
 		this._ButtonCart.addEventListener('click', () => {
 			this.events.emit('basket:open');
@@ -49,7 +49,7 @@ export class Page extends Component<IPageState> {
 		this.setText(this._counterCart, String(value));
 	}
 
-	// Обновление отображения товаров в галерее
+// Обновление отображения товаров в галерее
 
 	set productItems(items: HTMLElement[]) {
 		this._productGallery.replaceChildren(...items);

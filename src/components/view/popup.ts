@@ -14,13 +14,13 @@ export class Popup extends Component<IPopupView> {
 	protected _closeButton: HTMLButtonElement;
 	protected _content: HTMLElement;
 
-	// Конструктор принимает контейнер и объект для работы с событиями
+// Конструктор принимает контейнер и объект для работы с событиями
 
 	constructor(container: HTMLElement, protected events: IEvents) {
 		super(container);
 		console.log({ events: events });
 
-		// Находим кнопку закрытия 
+// Находим кнопку закрытия 
 
 		this._closeButton = ensureElement<HTMLButtonElement>(
 			'.modal__close',
@@ -32,7 +32,7 @@ export class Popup extends Component<IPopupView> {
 		this._content.addEventListener('click', (event) => event.stopPropagation());
 	}
 
-	// Сеттер для установки содержимого попапа
+// Сеттер для установки содержимого попапа
 
 	set content(value: HTMLElement) {
 		this._content.replaceChildren(value); 
@@ -46,7 +46,7 @@ export class Popup extends Component<IPopupView> {
 		}
 	};
 
-	// Метод открытия попапа
+// Метод открытия попапа
 
 	open() {
 		this._togglePopup();
@@ -55,7 +55,7 @@ export class Popup extends Component<IPopupView> {
 		this.events.emit('popup:open');
 	}
 
-	// Метод закрытия попапа
+// Метод закрытия попапа
 
 	close() {
 		this._togglePopup(false);
@@ -65,7 +65,7 @@ export class Popup extends Component<IPopupView> {
 		this.events.emit('popup:close');
 	}
 
-	// Метод рендера — вызывает базовый рендер и открывает попап
+// Метод рендера — вызывает базовый рендер и открывает попап
 
 	render(data: IPopupView): HTMLElement {
 		super.render(data);

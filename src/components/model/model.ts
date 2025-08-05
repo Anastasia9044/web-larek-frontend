@@ -14,7 +14,7 @@ export class CatalogItem extends Model<TCard> {
     price: number | null;
     inCart: boolean;
 
-    // Геттер для получения CSS-класса на основе категории товара
+// Геттер для получения CSS-класса на основе категории товара
 
     get categoryClass(): string {
         const categoryClass = new Map([
@@ -57,15 +57,21 @@ export class App extends Model<IAppModel> implements IAppModel {
 	};
 	formErrors: FormErrors = {};
 
+// Установка каталога товаров 
+
 	setCatalog(products: TCard[]) {
 		this.items = products.map((product) => new CatalogItem(product, this.events));
 		this.emitChanges('catalog:update', { catalog: this.items });
 	}
 
+//Установка выбранного товара для предварительного просмотра
+	
 	setPreview(item: CatalogItem) {
 		this.preview = item.id;
 		this.emitChanges('preview:change', item);
 	}
+
+//Добавление товара в корзину
 
 	addToBasket(item: CatalogItem) {
 		if (!this.basket.items.includes(item.id)) {
@@ -74,23 +80,18 @@ export class App extends Model<IAppModel> implements IAppModel {
 		this.emitChanges('preview:change', item);
 		this.emitChanges('basket:change', item);
 	}
-
+//Удаление товара из корзины
 	removeFromBasket(item: CatalogItem) {
 		this.basket.items = this.basket.items.filter(i => i !== item.id);
 		this.emitChanges('basket:change', item);
 	}
-
+//Удаляет товар из карточки
 	removeFromCard(item: CatalogItem) {
 		this.basket.items = this.basket.items.filter(i => i !== item.id);
 		this.emitChanges('preview:change', item);
 		this.emitChanges('basket:change', item);
 	}
-	/*removeFromCard(item: CatalogItem) {
-		this.basket.items = this.basket.items.filter(i => i !== item.id);
-		this.emitChanges('preview:change', item);
-		this.emitChanges('basket:change', item);
-	}
-		*/
+//Установка значения поля формы заказа
 	setOrderField(field: keyof TForm, value: string) {
 		if (field === 'payment') {
 			this.setOrderPayment(value);
@@ -102,7 +103,7 @@ export class App extends Model<IAppModel> implements IAppModel {
 			this.emitChanges('contact:open', this.order);
 		}
 	}
-
+//Установка значения контактных данных
 	setContactsField(field: keyof TContact, value: string) {
 		this.order[field] = value;
 
@@ -115,18 +116,15 @@ export class App extends Model<IAppModel> implements IAppModel {
 		}
 	}
 
-	/**
-	 * Перенос товаров и их столимости в заказ
-	 */
+//Перенос товаров и их стоимости в заказ
+
 	setOrderData() {
 		this.order.total = this.basket.price;
 		this.order.items = this.basket.items;
 	}
 
-	/**
-	 * Установка типа оплаты в заказе
-	 * @param {string} method
-	 */
+//Установка метода оплаты заказа
+
 	setOrderPayment(method: string) {
 		const payMethod = new Map([
 			['card', 'online'],
@@ -134,6 +132,8 @@ export class App extends Model<IAppModel> implements IAppModel {
 		]);
 		this.order.payment = payMethod.get(method) as PayMethod;
 	}
+
+//Валидация данных заказа перед отправкой
 
 	validateOrder() {
 		const errors: typeof this.formErrors = {};
@@ -148,6 +148,8 @@ export class App extends Model<IAppModel> implements IAppModel {
 		return Object.keys(errors).length === 0;
 	}
 
+//Валидация контактных данных перед оформлением заказа
+
 	validateContacts() {
 		const errors: typeof this.formErrors = {};
 		if (!this.order.email) {
@@ -160,7 +162,7 @@ export class App extends Model<IAppModel> implements IAppModel {
 		this.emitChanges('contacts:validate', this.formErrors);
 		return Object.keys(errors).length === 0;
 	}
-
+//Очистка корзины после оформления или отмены заказа
 	clearBasket() {
 		this.basket.items = [];
 		this.basket.price = 0;

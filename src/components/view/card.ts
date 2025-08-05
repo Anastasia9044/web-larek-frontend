@@ -1,8 +1,7 @@
-// Импорт утилиты для поиска или создания элементов, а также базового компонента
 import { ensureElement } from '../../utils/utils';
 import { Component } from '../base/component';
 
-// Интерфейс для обработки кликов по карточке (например, для кнопки или всей карточки)
+// Интерфейс для обработки кликов по карточке
 
 interface ICardActions {
 	onClick: (event: MouseEvent) => void;
@@ -53,7 +52,7 @@ export class Card<T> extends Component<ICardView> {
 		this._button = container.querySelector(`.${blockName}__button`);
 		this._index = container.querySelector('.basket__item-index');
 
-		// Установка обработчика клика. Если есть кнопка — на нее, иначе — на весь контейнер.
+// Установка обработчика клика, сли есть кнопка — на нее, иначе — на весь контейнер.
 		
 		if (actions?.onClick) {
 			if (this._button) {
@@ -64,7 +63,7 @@ export class Card<T> extends Component<ICardView> {
 		}
 	}
 
-	// Геттеры и сеттеры для управления свойствами карточки:
+// Геттеры и сеттеры для управления свойствами карточки
 
 	set id(value: string) {
 		this.container.dataset.id = value; 
