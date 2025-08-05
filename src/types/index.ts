@@ -1,27 +1,35 @@
-export interface ICard {
+export type TCard = {
   id: string;
   title: string;
   image: string;
-  price: number;
+  price: number| null;
   description: string;
+  category: string;
 }
 
-export interface ICardsList {
-  cards: ICard[];
-  total: number;
+export type TContact = {
+  email?: string;
+	phone?: string;
 }
+export type PayMethod = 'card' | 'cash';
 
-export interface IOrder {
-  cards: ICard[];
-  payment: 'card' | 'cash';
-  email: string;
+export type TForm = {
+  payment: PayMethod;
   address: string;
-  phone: string;
-  total: number;
+}
+export type TOrder = TForm & TContact & {
+	items?: string[]
+	total?: number;
 }
 
-export interface ICartPopup {
-  cards: ICard[];
-  total: number | null;
-  count: number;
+export type FormErrors = Partial<Record<keyof TOrder, string>>;
+
+export type TOrderResult = {
+	id: string;
+	price: number;
+}
+
+export type TCartPopup = {
+  items: string[];
+  price: number | null;
 }
