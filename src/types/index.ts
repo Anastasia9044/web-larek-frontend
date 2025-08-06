@@ -26,7 +26,7 @@ export type FormErrors = Partial<Record<keyof TOrder, string>>;
 
 export type TOrderResult = {
 	id: string;
-	price: number;
+	total: number;
 }
 
 export type TCartPopup = {

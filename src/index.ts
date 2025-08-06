@@ -50,7 +50,7 @@ events.on('catalog:update', () => {
 			image: item.image,
 			category: item.category,
 			price: item.price,
-			categoryClass: item.categoryClass
+			categoryClass: item.categoryClass,
 		});
 	});
 });
@@ -80,17 +80,17 @@ events.on('preview:change', (item: CatalogItem) => {
 			price: item.price,
 			available: inBasket,
 			categoryClass: item.categoryClass,
-		})
+		}),
 	});
 });
 
 //Открытие модального окна с содержимым корзины покупок
 
 events.on('basket:open', () => {
-	basket.toggleButton = app.basket.items.length === 0; 
-	basket.price = app.basket.price; 
+	basket.toggleButton = app.basket.items.length === 0;
+	basket.price = app.basket.price;
 	modal.render({
-		content: basket.render({})
+		content: basket.render({}),
 	});
 });
 
@@ -112,21 +112,21 @@ events.on('card:remove', (item: CatalogItem) => {
 	app.removeFromCard(item);
 });
 
-//Обработка изменений в корзине 
+//Обработка изменений в корзине
 //Обновляет список товаров в корзине и общую сумму
 
 events.on('basket:change', () => {
 	let price = 0;
 	basket.items = app.basket.items.map((id, index) => {
 		console.log({ index });
-		
+
 		const item = app.items.find((item) => item.id === id);
 		price += item.price;
-		
+
 		const card = new Card('card', cloneTemplate(cardBasketTemplate), {
-			onClick: () => events.emit('basket:remove', item)
+			onClick: () => events.emit('basket:remove', item),
 		});
-		
+
 		return card.render({
 			index: (index + 1).toString(),
 			title: item.title,
@@ -138,87 +138,102 @@ events.on('basket:change', () => {
 	basket.toggleButton = app.basket.items.length === 0;
 	basket.price = app.basket.price;
 	page.cartItemCount = app.basket.items.length;
-
 });
 
 //Открытие формы оформления заказа в модальном окне
 
 events.on('order:open', () => {
+	app.validateOrder(); // обновляем ошибки и валидность
 	modal.render({
 		content: order.render({
-			valid: false,
-			errors: []
-		})
+			valid: Object.keys(app.formErrors).length === 0,
+			errors: Object.values(app.formErrors),
+		}),
 	});
 });
 
-//Обработка изменений в полях формы заказа 
+//Обработка изменений в полях формы заказа
 
-events.on(/^order\..*:change/, (data: { field: keyof TForm, value: string }) => {
-	app.setOrderField(data.field, data.value);
-});
+events.on(
+	/^order\..*:change/,
+	(data: { field: keyof TForm; value: string }) => {
+		app.setOrderField(data.field, data.value);
+	}
+);
 
 //Валидация формы заказа, бновление состояния валидности и ошибок формы.
 
 events.on('order:validate', (errors: Partial<TOrder>) => {
 	const { address, payment } = errors;
 	order.valid = !address && !payment; // форма валидна если нет ошибок по адресу и способу оплаты
-	order.errors = Object.values({ address, payment }).filter(i => !!i).join('; ');
+	order.errors = Object.values({ address, payment })
+		.filter((i) => !!i)
+		.join('; ');
 });
 
 //Открытие формы контактов для ввода данных пользователя перед оформлением заказа
 
 events.on('order:submit', () => {
+	app.validateContacts(); // обновляем ошибки и валидность
 	modal.render({
 		content: contacts.render({
-			valid: false,
-			errors: []
-		})
+			valid: Object.keys(app.formErrors).length === 0,
+			errors: Object.values(app.formErrors),
+		}),
 	});
 });
-events.on(/^contacts\..*:change/, (data: { field: keyof TContact, value: string }) => {
-	app.setContactsField(data.field, data.value);
-});
+
+events.on(
+	/^contacts\..*:change/,
+	(data: { field: keyof TContact; value: string }) => {
+		app.setContactsField(data.field, data.value);
+	}
+);
 
 //Изменилось состояние валидации формы контактов
- 
+
 events.on('contacts:validate', (errors: Partial<TOrder>) => {
 	const { email, phone } = errors;
 	contacts.valid = !email && !phone;
-	contacts.errors = Object.values({ email, phone }).filter(i => !!i).join('; ');
+	contacts.errors = Object.values({ email, phone })
+		.filter((i) => !!i)
+		.join('; ');
 });
 
 events.on('contacts:submit', () => {
-	api.placeOrder(app.order)
+	api
+		.placeOrder(app.order)
 		.then((result: TOrderResult) => {
 			app.clearBasket(); // очистить корзину после успешного оформления заказа
-			const success = new Success('order-success', cloneTemplate(successTemplate), {
-				onClick: () => { modal.close(); },
-			});
-			success.price = result.price; 
+			const success = new Success(
+				'order-success',
+				cloneTemplate(successTemplate),
+				{
+					onClick: () => {
+						modal.close();
+					},
+				}
+			);
+			success.price = result.total;
 			modal.render({
 				content: success.render(),
 			});
 		})
-        .catch(console.error); // обработка ошибок при отправке заказа
+		.catch(console.error); // обработка ошибок при отправке заказа
 });
-
 
 //Открытие модального окна с формой контактов для ввода данных клиента перед подтверждением заказа
 
 events.on('modal:open', () => {
-	page.isLocked  = true; // блокировка страницы при открытом модальном окне
+	page.isLocked = true; // блокировка страницы при открытом модальном окне
 });
 
 // Разблокировка страницы после закрытия модального окна
 
 events.on('modal:close', () => {
-	page.isLocked  = false; // разблокировка страницы после закрытия модального окна
+	page.isLocked = false; // разблокировка страницы после закрытия модального окна
 });
 
 // Загрузка списка товаров с сервера при инициализации приложения.
 
-api
-    .getProductList()
-    .then(app.setCatalog.bind(app))
-    .catch(console.error);
+api.getProductList().then(app.setCatalog.bind(app)).catch(console.error);

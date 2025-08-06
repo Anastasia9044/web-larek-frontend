@@ -89,7 +89,7 @@ export class Card<T> extends Component<ICardView> {
 		this.setText(this._description, value);
 	}
 
-	set price(value: number) {
+	set price(value: number | null) {
 		this.setText(
 			this._price,
 			value ? `${value.toString()} синапсов` : 'Бесценно'
